@@ -1,20 +1,23 @@
-const mongoose = require("mongoose");
 const app = require("./app");
 
-const PORT = process.env.PORT || 5000;
-const MONGO_URI =
-  process.env.MONGO_URI || "mongodb://127.0.0.1:27017/mern-task-db";
+// Handle uncaught exceptions (sync errors)
+process.on("uncaughtException", err => {
+  console.log("UNCAUGHT EXCEPTION! Shutting down...");
+  console.log(err.name, err.message);
+  process.exit(1);
+});
 
-// Connect to MongoDB
-mongoose
-  .connect(MONGO_URI)
-  .then(() => {
-    console.log("Connected to MongoDB");
-    // Start server
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error("MongoDB connection failed:", err.message);
+// Start server
+const port = process.env.PORT || 8000;
+const server = app.listen(port, () => {
+  console.log(`App running on port ${port}...`);
+});
+
+// Handle unhandled promise rejections (async errors)
+process.on("unhandledRejection", err => {
+  console.log("UNHANDLED REJECTION! Shutting down...");
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
   });
+});
