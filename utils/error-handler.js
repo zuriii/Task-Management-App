@@ -1,6 +1,5 @@
-const AppError = require("../utils/app-error");
+const AppError = require("../utils/appError");
 const { ResponseCodes } = require("../enums/response-codes");
-const { logger } = require("./global-middlewares");
 
 const handleCastErrorDB = (err) => {
   const message = `Invalid ${err.path}:${err.value}`;
@@ -64,20 +63,13 @@ const sendErrorprod = (stack, err, req, res) => {
       err.statusCode === ResponseCodes.Unauthorized ||
       err.statusCode === ResponseCodes.ExpiredToken
     ) {
-      logger.warn(
-        `${req.method} IP:${logData.IpAddress} statusCode:${err.statusCode} ${stack.stack}..`,
-        JSON.stringify(logData)
-      );
+
       return res.status(err.statusCode).json({
         error: true,
         message: err.message,
       });
     }
 
-    logger.warn(
-      `${req.method} ${req.url} ${err.statusCode} ${stack.stack}.`,
-      JSON.stringify(logData)
-    );
     return res.status(err.statusCode).json({
       error: true,
       message: err.message,
@@ -85,10 +77,6 @@ const sendErrorprod = (stack, err, req, res) => {
   }
 
   // For programming or other errors
-  logger.error(
-    `${req.method} ${req.url} ${err.statusCode} ${stack.stack}`,
-    JSON.stringify(logData)
-  );
   return res.status(err.statusCode).json({
     error: true,
     message: "Internal Server Error!",
