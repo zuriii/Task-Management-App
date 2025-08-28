@@ -18,9 +18,9 @@ const taskSchema = new mongoose.Schema(
       enum: ["pending", "done"],
       default: "pending",
     },
-    // user: {
-    //   type: String,
-    // },
+    assign_users: {
+      type: [String],
+    },
     added_by: {
       type: String,
     },
