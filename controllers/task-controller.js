@@ -83,7 +83,7 @@ exports.updateTask = catchAsync(async (req, res) => {
     return sendResponse(res, ResponseCodes.NotFound, "Task not found");
   }
 
-  if (!task.assign_users.includes(req.user.id)) {
+  if (!task.assign_users.includes(req.user.id) && req.user.role !== "admin") {
     return sendResponse(
       res,
       ResponseCodes.Forbidden,
@@ -118,7 +118,8 @@ exports.deleteTask = catchAsync(async (req, res) => {
     return sendResponse(res, ResponseCodes.NotFound, "Task not found");
   }
 
-  if (!task.assign_users.includes(req.user.id)) {
+  // Only allow if user is assigned OR admin
+  if (!task.assign_users.includes(req.user.id) && req.user.role !== "admin") {
     return sendResponse(
       res,
       ResponseCodes.Forbidden,
